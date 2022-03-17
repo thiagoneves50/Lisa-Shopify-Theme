@@ -1,4 +1,4 @@
-<article class="py-8">
+<article class="py-8" itemscope itemtype="http://schema.org/BlogPosting">
   {% for block in section.blocks %}
     {% case block.type %}
     
@@ -6,7 +6,7 @@
         <div class="flex items-center justify-center">
            <div class="max-w-7xl text-center">
              <a href="{{ blog.url }}" class="text-base uppercase text-gray-500 hover:text-gray-900 font-bold">{{ blog.title }}</a>
-             <h1 class="text-4xl md:text-6xl font-medium">
+             <h1 class="text-4xl md:text-6xl font-medium" itemprop="headline">
                {{ article.title }}
              </h1>
            </div>
@@ -14,9 +14,9 @@
 
       {% when 'article_author' %}
         <div class="flex items-center justify-center">
-          <div class="max-w-7xl text-center">
+          <div class="max-w-7xl text-center" itemscope itemtype="http://schema.org/Person">
             {% if section.settings.enable_author %}
-            <small>{{ article.author }}</small>
+            <small itemprop="author">{{ article.author }}</small>
             {% endif %}
           </div>
         </div>        
@@ -25,14 +25,14 @@
       <div class="flex items-center justify-center">
         <div class="max-w-7xl text-center">
           {% if section.settings.enable_published_date %}
-          <time datetime="{{ article.published_at | date: '%Y-%m-%d'}}">
+          <time itemprop="datePublished dateCreated" datetime="{{ article.published_at | date: '%Y-%m-%d'}}">
             {{ article.published_at | date: format: 'on_date' }}
           </time>
           {% endif %}
         </div>
       </div> 
       {% when 'featured_image' %}
-        <div class="max-w-7xl bg-blue-100 rounded-lg mx-2 md:mx-auto overflow-hidden my-6">
+        <div itemprop="image " class="max-w-7xl bg-blue-100 rounded-lg mx-2 md:mx-auto overflow-hidden my-6">
           {% if article.image != blank %}
             <img class="w-full h-80 md:h-96 object-cover object-center" src="{{ article.image | img_url: 'master' }}" alt="article.image.title">
             {% else %}
@@ -43,7 +43,7 @@
 
       {% when 'article_content' %}
         <div class="flex items-center justify-center">
-          <div class="max-w-4xl">
+          <div itemprop="articleBody" class="max-w-4xl">
             {{ article.content}}
           </div>
         </div>
@@ -69,9 +69,9 @@
             </div>
           {% endfor %}
 
-          {% if paginate.pages > 1 %}
-            {{ paginate | default_pagination }}
-          {% endif %}
+          <div class="mac-w-6xl mx-auto">
+            {% render 'pagination', _paginate: paginate %}
+          </div>
         {% endpaginate %}
       </div>
       {% else %}
@@ -157,6 +157,32 @@
   </div>
 {% endif %}
 
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "type": "BlogPosting",
+  "headline": {{ article.title | json }},
+  "articleBody": {{ article.content | strip_html | json }},
+  {% if article.exerpt != blank %}
+    "description": {{ article.exerpt | strip_html | json }},
+  {% endif %}
+  {% if article.image %}
+    "image": [
+      {{ article.image | image_url: "master" | prepend: 'https:' | json }}
+    ],
+  {% endif %}
+  "datePublished": {{ article.published_at | date: format: "default" | json }},
+  "dateCreated": {{ article.created_at | date: format: "default" | json }},
+  "author": {
+    "@type": "Person",
+    "name": {{ article.author | json }}
+  }
+  "publisher": {
+    "@type": "Organization",
+    "name": {{ shop.name | json }}
+  }
+}
+</script>
 
 {% schema %}
 {

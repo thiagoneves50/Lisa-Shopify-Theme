@@ -1,0 +1,27 @@
+{% if _paginate.pages > 1 %}
+  <nav role="navigation" class="flex justify-center my-8">
+    {% if _paginate.previous %}
+      <a class="border boreder-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white px-8 py-3 mx-1 rounded-sm font-medium" href="{{ _paginate.previous.url }}">
+        {{ _paginate.previous.title }}
+      </a>      
+    {% endif %}
+
+    {% for part in _paginate.parts %}
+      {% if part.is_link %}
+          <a class="border boreder-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white px-8 py-3 mx-1 rounded-sm font-medium" href="{{ part.url }}">
+            {{ part.title }}
+          </a>
+        {% else %}
+          <span class="border boreder-gray-600 bg-gray-600 text-white px-8 py-3 mx-1 rounded-sm font-medium">
+            {{ part.title }}
+          </span>  
+      {% endif %}
+    {% endfor %}
+
+    {% if _paginate.next %}
+    <a class="border boreder-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white px-8 py-3 mx-1 rounded-sm font-medium" href="{{ _paginate.next.url }}">
+      {{ _paginate.next.title }}
+    </a>
+    {% endif %}
+  </nav>
+{% endif %}
