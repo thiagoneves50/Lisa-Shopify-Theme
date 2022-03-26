@@ -146,6 +146,47 @@
         {% endfor %}
         
       {% endform %}
+
+      <div class="tab-container">
+        <div class="titles">
+          {% unless section.settings.tab_1_title and section.settings.tab_1_content == blank %}
+            <button class="title-btn active">{{ section.settings.tab_1_title }}</button>
+          {% endunless %}
+          
+          {% unless section.settings.tab_2_title and section.settings.tab_2_content == blank %}
+            <button class="title-btn">{{ section.settings.tab_2_title }}</button>
+          {% endunless %}
+
+          {% unless section.settings.tab_3_title and section.settings.tab_3_content == blank %}
+          <button class="title-btn">{{ section.settings.tab_3_title }}</button>
+          {% endunless %}
+        </div>
+        <div class="contents">
+          {% unless section.settings.tab_1_title and section.settings.tab_1_content == blank %}
+            <div class="content active">
+              {{ section.settings.tab_1_content }}
+            </div>
+          {% endunless %}
+
+          {% unless section.settings.tab_2_title and section.settings.tab_2_content == blank %}
+          <div class="content">
+            {% if product.metafields.my_fields.materials != blank %}
+              {{ product.metafields.my_fields.materials }}
+              {% else %}                  
+              {{ section.settings.tab_2_content }}
+            {% endif %}
+          </div>
+          {% endunless %}
+
+          {% unless section.settings.tab_3_title and section.settings.tab_3_content == blank %}
+          <div class="content">
+            {{ section.settings.tab_3_content }}
+          </div>
+          {% endunless %}
+
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -232,6 +273,38 @@
 {% schema %}
 {
   "name": "Product",
+  "settings": [
+    {
+      "type": "text",
+      "id": "tab_1_title",
+      "label": "Tab 1 Title"
+    },
+    {
+      "type": "richtext",
+      "id": "tab_1_content",
+      "label": "Tab 1 content"
+    },
+    {
+      "type": "text",
+      "id": "tab_2_title",
+      "label": "Tab 2 Title"
+    },
+    {
+      "type": "richtext",
+      "id": "tab_2_content",
+      "label": "Tab 2 content"
+    },
+    {
+      "type": "text",
+      "id": "tab_3_title",
+      "label": "Tab 3 Title"
+    },   
+    {
+      "type": "richtext",
+      "id": "tab_3_content",
+      "label": "Tab 3 content"
+    }
+  ],
   "blocks": [
     {
       "type": "vendor",

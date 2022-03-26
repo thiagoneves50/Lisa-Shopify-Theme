@@ -10,16 +10,14 @@
 			name="viewport"
 			content="width=device-width,initial-scale=1,shrink-to-fit=no"
 		/>
-		{{
-			content_for_header
-		}}
+		{{ content_for_header }}
 		<!-- Header hook for plugins -->
-		{{
-			"application.css" | asset_url | stylesheet_tag
-		}}
-		{{
-			"application.js" | asset_url | script_tag
-		}}
+		{{ "application.css" | asset_url | stylesheet_tag	}}		
+		{{ "application.js" | asset_url | script_tag }}
+		<!-- Product Tabs -->
+		{{ "tabs.css" | asset_url | stylesheet_tag	}}
+		
+
 		<script src="//unpkg.com/alpinejs" defer></script>
 
 		<style>
@@ -32,5 +30,6 @@
 		<main role="main">
 			{{ content_for_layout }}
 		</main>
+		{{ "tabs.js" | asset_url | script_tag }}
 	</body>
 </html>

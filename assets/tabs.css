@@ -1,0 +1,106 @@
+/* Tab variables */
+:root {
+  --tab-color-primary: #000;
+  --tab-color-secondary: #f7ce68;
+  --tab-color-dark: #333;
+  --tab-color-light: #eee;
+  --tab-color-gray: #bdbdbd;
+}
+
+/* Tab Container */
+.tab-container {
+  font-family: inherit;
+  width: 100%;
+  height: 300px;
+  margin-top: 40px;
+  display: grid;
+  grid-template-rows: 1fr 4fr;
+  background-color: #fff;
+  /* box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.3); */
+}
+/* Tab Titles */
+.tab-container .titles {
+  padding: 20px 20px 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+  border-bottom: 2px solid var(--tab-color-light);
+}
+.tab-container .titles .title-btn {
+  background: none;
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+  text-align: center;
+  color: var(--tab-color-gray);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.4s;
+}
+.tab-container .titles .title-btn::before {
+  content: '';   
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  width: 60px;
+  height: 4px;
+  background-color: var(--tab-color-primary);
+  border-radius: 3px;
+  transition: transform 0.6s;
+} 
+.tab-container .titles .title-btn:hover::before {
+  transform: translateX(-50%) scale(1);
+}
+.tab-container .titles .title-btn.active {
+  color: var(--tab-color-primary);  
+}
+.tab-container .titles .title-btn.active::before {
+  transform: translateX(-50%) scale(1);
+}
+/* Tab Contents */
+.tab-container .contents {
+  position: relative;
+  overflow: hidden;
+}
+.tab-container .contents .content {
+  width: 100%;
+  padding: 20px;
+  color: var(--tab-color-dark);
+  position: absolute;
+  top: 0;
+  left: 100%;
+  opacity: 0;
+  transition: 0.4s;
+}
+.tab-container .contents .content.active {
+  left: 0;
+  opacity: 1;
+}
+
+/* Tab Media Queries */
+@media (max-width: 768px) {
+  .tab-container {
+    width: 90%;
+    grid-template-rows: 1fr 5fr;
+  }
+  /* Titles */
+  .tab-container .titles {
+    padding: 12px 12px 0 12px;
+  }
+  .tab-container .titles .title-btn {
+    font-size: 14px;
+  }
+  .tab-container .contents .content {
+    padding: 12px;
+    font-size: 14px;
+  }  
+}
+@media (max-width: 425px) {
+  .tab-container {
+    width: 100%;
+    border-radius: none;
+  }
+}
