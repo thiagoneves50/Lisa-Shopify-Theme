@@ -1,3 +1,5 @@
+/* START - Tabs */
+
 /* Tab variables */
 :root {
   --tab-color-primary: #000;
@@ -104,3 +106,28 @@
     border-radius: none;
   }
 }
+/* END - Tabs */
+
+/* START - Slick Slider */
+.testimonial-slider {
+  width: 100%;
+}
+.slide {
+  max-width: 350px;
+  padding: 30px;
+  margin: 30px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+.testimonial-quote img {
+  width: 10%;
+}
+.testimonial-image img {
+  display: block;
+  border-radius: 50%;
+  max-width: 25%;
+  margin: 15px auto;
+}
+.testimonial-name {
+  text-align: center;
+}
+/* END - Slick Slider */

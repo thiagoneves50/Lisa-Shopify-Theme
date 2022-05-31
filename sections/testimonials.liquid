@@ -1,0 +1,64 @@
+<div class="testimonial-slider">
+
+  {% for block in section.blocks %}
+  
+    {% case block.type %}
+
+      {% when 'testimonial' %}
+        <div class="slide">
+          <div class="testimonial-quote">
+            <img src="quotes.svg" alt="">
+          </div>
+          <div class="testimonial-text">
+            {{ block.settings.slide_text }}          
+          </div>
+          <div class="testimonial-image">
+            <img src="{{ block.settings.slide_image }}" alt="">
+          </div>
+          <div class="testimonial-name">{{ block.settings.slide_name }}</div>
+        </div>
+      {% else %}
+        
+    {% endcase %}
+  {% endfor %}
+      
+
+</div>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "settings": [
+    
+  ],
+  "blocks": [
+    {
+      "name": "Testimonial",
+      "type": "testimonial",
+      "settings": [
+        {          
+          "type": "text",
+          "id": "slide_text",
+          "label": "Slide Text"
+        },
+        {          
+          "type": "url",
+          "id": "slide_image",
+          "label": "Slide Image"
+        },
+        {          
+          "type": "text",
+          "id": "slide_name",
+          "label": "Slide Name"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials"
+    }
+  ]
+}
+
+{% endschema %}

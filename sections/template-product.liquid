@@ -144,7 +144,7 @@
               
           {% endcase %}
         {% endfor %}
-        
+
       {% endform %}
 
       <div class="tab-container">
@@ -170,8 +170,15 @@
 
           {% unless section.settings.tab_2_title and section.settings.tab_2_content == blank %}
           <div class="content">
-            {% if product.metafields.my_fields.materials != blank %}
-              {{ product.metafields.my_fields.materials }}
+            {% if product.metafields.my_fields.material != blank %}
+  
+              <div class="pd-metafield-1">
+                {{ product.metafields.my_fields.material }}
+              </div>
+              <div class="pd-metafield-2">
+                {{ product.metafields.my_fields.material2 }}
+              </div>          
+
               {% else %}                  
               {{ section.settings.tab_2_content }}
             {% endif %}
@@ -191,6 +198,20 @@
   </div>
 </div>
 
+<script type="application/json" id="DetailsJson">
+{
+  {% for variant in product.variants %}
+    "{{ variant.id }}": {{variant.metafields.my_fields.variant-mt | json}}{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+}
+</script>
+<script>
+  const detailsJson = document.querySelector("#DetailsJson");
+  if (detailsJson) {
+    document.variantDetails = JSON.parse(detailsJson.innerHTML);
+  }
+</script>
+
 <script>
   class VariantSelector extends HTMLElement {
     constructor() {
@@ -206,7 +227,25 @@
 
       if(this.currentVariant) {
         this.updateURL();
+        // setTimeout(location.reload(), 1000)
+
+        const pdMetafield1 = document.querySelector('.pd-metafield-1')
+        console.log('pdMetafield1:', pdMetafield1)
+        const pdMetafield2 = document.querySelector('.pd-metafield-2')
+        console.log('pdMetafield2:', pdMetafield2)
+        
+        if (this.currentVariant.option2 == "Pink") {
+          pdMetafield1.classList.remove('hidden')
+          pdMetafield2.classList.add('hidden')
+          console.log('pink');
+        } else if (this.currentVariant.option2 == "Blue") {
+          console.log('azul');
+          pdMetafield1.classList.add('hidden')
+          pdMetafield2.classList.remove('hidden')
+        }
       }
+
+
     }
     getSelectedOptions() {
       this.options = Array.from(this.querySelectorAll('select'), (select) => select.value)
