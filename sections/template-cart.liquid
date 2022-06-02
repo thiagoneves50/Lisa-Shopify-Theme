@@ -37,7 +37,8 @@
                   <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity=0" class="text-sm font-medium text-red-500 my-1">Remove</a>
                 </td>
                 <td class="py-4 px-2">
-                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="1" id="updates_{{ forloop.index }}" class="w-20 border p-2">
+                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="1" id="updates_{{ forloop.index }}" class="w-20 border p-2" data-line-item="{{ forloop.index }}">
+                  <button type="button" class="cart-add-button"> + </button>
                 </td>
                 <td class="py-4 px-2">
                   {{ item.line_price | money }}
@@ -89,6 +90,19 @@
       </form>
     </div>
   </div>
+<!-- Ajax cart test -->
+
+<button type="button" class="cart-button">Get Cart Items</button>
+  <div id="ajax-cart-template" class="">
+    {% for item in cart.items %}
+      <div class="grid grid-cols-2">
+        <div class="text-red-600">{{ item.title }}</div>
+        <div class="">{{ item.quantity }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+
   {% else %}
     <div class="max-w-6xl h-60 my-4 mx-auto flex items-center justify-center">
       <div class="text-center">
