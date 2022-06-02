@@ -62,9 +62,12 @@ console.log('this is ajax cart');
 const ajaxCartContainer = document.querySelector('#ajax-cart-template');
 const getItems = document.querySelector('.cart-button');
 const addItem = document.querySelectorAll('.cart-add-button');
-const cartItems = document.querySelectorAll('input[data-line-item]')
+const subtractItem = document.querySelectorAll('.cart-minus-button');
+const cartItemsInputs = document.querySelectorAll('input[data-line-item]');
 const lineNumbers = [];
-cartItems.forEach((element, index) => {	
+
+// Store line_item numbers inside lineNumbers array
+cartItemsInputs.forEach((element, index) => {	
 	let lineStr = element.dataset.lineItem
 	let line = parseInt(lineStr)
 	lineNumbers[index] = line
@@ -72,87 +75,65 @@ cartItems.forEach((element, index) => {
 	console.log(lineNumbers);
 });
 
+// test grabing cart html from 'layout none' cart template
 getItems.addEventListener('click', function(){
-	console.log('getting cart items');
+	getCartItems()
+})
+
+// Get cart html from 'layout none' cart template
+function getCartItems() {
+	console.log('Fetching cart items');
 	fetch('/?view=cart-drawer')
 		.then(response => { 
 			return response.text() 
 		})
 		.then(data => {
 			console.log(data);
-			ajaxCartContainer.innerHTML = data
-			
+			ajaxCartContainer.innerHTML = data			
 		})
-})
-// addItem.addEventListener('click', function(){
-// 	console.log('adding 1 item');
+}
 
-// 	let formData = {
-// 		'updates': [{
-// 		 'id': 36110175633573,
-// 		 'quantity': 2
-// 		 }]
-// 	 };	
-
-
-// 	fetch('/?view=cart-drawer')
-// 		.then(response => { 
-// 			return response.text() 
-// 		})
-// 		.then(data => {
-// 			console.log(data);
-// 			ajaxCartContainer.innerHTML = data
-			
-// 		})
-// })
+// Adds cart update function to all Add buttons
 addItem.forEach(item => {
 	item.addEventListener('click', function(event){
 		console.log(getLineCartItem(event))
 		console.log(getLineCartItemQty(event))
 		let cartLineItem = getLineCartItem(event)
 		let cartLineItemQty = getLineCartItemQty(event)
-
-		updateQuantity(cartLineItem, ++cartLineItemQty)
-		
-		
+		// Calls update function on click and adds +1 to item
+		updateQuantity(cartLineItem, ++cartLineItemQty)			
 	})	
 });
 
+// Adds cart update function to all Minus buttons
+// ...
+
+// Get line_item from item
 function getLineCartItem(event) {
 	return parseInt(event.target.previousElementSibling.dataset.lineItem);
 }
+// Get quantity from line_item
 function getLineCartItemQty(event) {
 	return parseInt(event.target.previousElementSibling.value);
 }
-
+// Updates the cart line_item
 function updateQuantity(line, qty) {
+	let formData = {
+		line: line,
+		quantity: qty
+	}
+	
 	fetch('/cart/change.js', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({
-			line: line,
-			quantity: qty
-		})
+		body: JSON.stringify(formData)
 	}).then(function (response) {
-		console.log('iniciando');
 		return response.json();
 	}).then(function (data) {
-		// fire javascript event on window
-		setTimeout(() => {
-			console.log(data);
-			fetch('/?view=cart-drawer')
-		.then(response => { 
-			return response.text() 
-		})
-		.then(data => {
-			console.log(data);
-			ajaxCartContainer.innerHTML = data
-			
-		})
-
-		}, 500)
+		// get cart items and print on the screen
+		getCartItems()
 	})["catch"](function (error) {
 		console.error('Error:', error);
 	});
