@@ -1,0 +1,146 @@
+<div class="ajax-cart-template h-full border-2 border-dashed border-gray-200" aria-hidden="true" id="">
+  {% if cart.item_count > 0 %}
+    <form action="{{ routes.cart_url }}" method="post" class="h-full">
+
+      {% for item in cart.items %}
+        <div class="ajax-cart-line-item relative" data-line-item="{{ forloop.index }}">
+        	<div class="flex m-4 items-center">
+	          <div class="m-4">
+	            <img src="{{ item | image_url: width: 100, height: 100 }}" alt="">
+	          </div>                        
+	          <div class="flex flex-col text-left">
+	            <a>{{ item.title }}</a>
+	            <div class="flex flex-row">
+	              <button type="button" class="cart-minus-button"> - </button>
+	              <input 
+	                type="number"
+	                name="updates[]"
+	                value="{{ item.quantity }}"
+	                min="0"
+	                data-line-item="{{ forloop.index }}"
+	                class="ajax-cart-line-item__input w-10 text-center"                                                           
+	              >
+	              <button type="button" class="cart-add-button"> + </button>              
+	
+	            </div>
+	          </div>
+	        </div>
+					<div class="ajax-cart-line-item__remove absolute top-0 right-0 transform -translate-x-[200%] cursor-pointer">X</div>
+        </div>
+      {% endfor %}
+
+    </form>
+
+    {% else %}
+        No items in the cart :(
+  {% endif %}
+</div>
+
+<script>
+  // START - Ajax Cart
+console.log('this is ajax cart');
+
+const ajaxCartContainer = document.querySelector('.ajax-cart-template');
+const getItems = document.querySelector('.cart-button');
+const addItems = document.querySelectorAll('.cart-add-button');
+const subtractItems = document.querySelectorAll('.cart-minus-button');
+const removeItems = document.querySelectorAll('.ajax-cart-line-item__remove');
+const cartItemsInputs = document.querySelectorAll('input[data-line-item]');
+const lineNumbers = [];
+
+// Store line_item numbers inside lineNumbers array
+cartItemsInputs.forEach((element, index) => {	
+	let lineStr = element.dataset.lineItem
+	let line = parseInt(lineStr)
+	lineNumbers[index] = line
+	console.log(line);
+	console.log(lineNumbers);
+});
+if(ajaxCartContainer && getItems && addItem && cartItemsInputs) {
+
+	// test grabing cart html from 'layout none' cart template
+	getItems.addEventListener('click', function(){
+		getCartItems()
+	})
+}
+
+// Get cart html from 'layout none' cart template
+function getCartItems() {
+	console.log('Fetching cart items');
+	fetch('/?view=cart-drawer')
+		.then(response => { 
+			return response.text() 
+		})
+		.then(data => {
+      const domParser = new DOMParser()
+      const parsed = domParser.parseFromString(data, 'text/html')
+			console.log(parsed);
+			console.log(parsed.body.querySelector('script').innerHTML);
+			ajaxCartContainer.innerHTML = parsed.body.innerHTML
+      eval(parsed.body.querySelector('script').innerHTML)
+		})
+}
+
+// Adds cart update function to all Add buttons
+addItems.forEach(item => {
+	item.addEventListener('click', function(event){		
+		let cartLineItem = getLineItem(event)
+		let cartLineItemQty = getLineCartItemQty(event)
+		// Calls update function on click and adds +1 to item
+		updateQuantity(cartLineItem, ++cartLineItemQty)			
+	})	
+});
+
+// Adds cart update function to all Minus buttons
+subtractItems.forEach(item => {
+	item.addEventListener('click', function(event){		
+		let cartLineItem = getLineItem(event)
+		let cartLineItemQty = getLineCartItemQty(event)
+		// Calls update function on click and subtracts -1 to item
+		updateQuantity(cartLineItem, --cartLineItemQty)			
+	})	
+});
+
+// Adds cart update function to all Remove buttons
+removeItems.forEach(item => {
+	item.addEventListener('click', function(event){		
+		let cartLineItem = getLineItem(event)
+		let cartLineItemQty = getLineCartItemQty(event)
+		// Calls update function on click and sets qty to 0
+		updateQuantity(cartLineItem, 0)			
+	})	
+});
+
+
+// Get line_item
+function getLineItem(event) {
+	return parseInt(event.target.closest('.ajax-cart-line-item').dataset.lineItem)
+}
+// Get quantity from line_item
+function getLineCartItemQty(event) {
+	return parseInt(event.target.closest('.ajax-cart-line-item').querySelector('.ajax-cart-line-item__input').value);
+}
+
+// Updates the cart line_item
+function updateQuantity(line, qty) {
+	let formData = {
+		line: line,
+		quantity: qty
+	}
+	
+	fetch('/cart/change.js', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(formData)
+	}).then(function (response) {
+		return response.json();
+	}).then(function (data) {
+		// get cart items and print on the screen
+		getCartItems()
+	})["catch"](function (error) {
+		console.error('Error:', error);
+	});
+}
+</script>

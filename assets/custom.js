@@ -56,86 +56,29 @@ $(document).ready(function () {
 });
 // END - Slick Slider Section
 
-// START - Ajax Cart
-console.log('this is ajax cart');
 
-const ajaxCartContainer = document.querySelector('#ajax-cart-template');
-const getItems = document.querySelector('.cart-button');
-const addItem = document.querySelectorAll('.cart-add-button');
-const subtractItem = document.querySelectorAll('.cart-minus-button');
-const cartItemsInputs = document.querySelectorAll('input[data-line-item]');
-const lineNumbers = [];
 
-// Store line_item numbers inside lineNumbers array
-cartItemsInputs.forEach((element, index) => {	
-	let lineStr = element.dataset.lineItem
-	let line = parseInt(lineStr)
-	lineNumbers[index] = line
-	console.log(line);
-	console.log(lineNumbers);
-});
+// Cart drawer
+const cartDrawer = document.querySelector('#cart-drawer');
+const cartButton = document.querySelector('#cart-button');
+const cartCloseButton = document.querySelector('#cart-close-button');
 
-// test grabing cart html from 'layout none' cart template
-getItems.addEventListener('click', function(){
-	getCartItems()
-})
-
-// Get cart html from 'layout none' cart template
-function getCartItems() {
-	console.log('Fetching cart items');
-	fetch('/?view=cart-drawer')
-		.then(response => { 
-			return response.text() 
-		})
-		.then(data => {
-			console.log(data);
-			ajaxCartContainer.innerHTML = data			
-		})
-}
-
-// Adds cart update function to all Add buttons
-addItem.forEach(item => {
-	item.addEventListener('click', function(event){
-		console.log(getLineCartItem(event))
-		console.log(getLineCartItemQty(event))
-		let cartLineItem = getLineCartItem(event)
-		let cartLineItemQty = getLineCartItemQty(event)
-		// Calls update function on click and adds +1 to item
-		updateQuantity(cartLineItem, ++cartLineItemQty)			
-	})	
-});
-
-// Adds cart update function to all Minus buttons
-// ...
-
-// Get line_item from item
-function getLineCartItem(event) {
-	return parseInt(event.target.previousElementSibling.dataset.lineItem);
-}
-// Get quantity from line_item
-function getLineCartItemQty(event) {
-	return parseInt(event.target.previousElementSibling.value);
-}
-// Updates the cart line_item
-function updateQuantity(line, qty) {
-	let formData = {
-		line: line,
-		quantity: qty
+cartButton.addEventListener('click', function(event){
+	if (!cartDrawer.classList.contains('active')) {
+		cartDrawer.classList.add('active')		
+	} else {
+		cartDrawer.classList.remove('active')
 	}
-	
-	fetch('/cart/change.js', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(formData)
-	}).then(function (response) {
-		return response.json();
-	}).then(function (data) {
-		// get cart items and print on the screen
-		getCartItems()
-	})["catch"](function (error) {
-		console.error('Error:', error);
-	});
-}
-
+})
+document.addEventListener('click', function(event){
+	console.log(event.target);
+	if (event.target.id === 'drawer-outside') {
+		cartDrawer.classList.remove('active');
+	}
+	if (event.target.parentElement.id === 'cart-close-button') {
+		cartDrawer.classList.remove('active');
+	}
+	if (event.target.parentElement.parentElement.id === 'cart-close-button') {
+		cartDrawer.classList.remove('active');
+	}
+})

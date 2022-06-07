@@ -1,9 +1,4 @@
 {% layout none %}
 
 
-{% for item in cart.items %}
-<div class="grid grid-cols-2">
-  <div class="text-red-600">{{ item.title }}</div>
-  <div class="">{{ item.quantity }}</div>
-</div>
-{% endfor %}
+{% render 'cart-form' %}
